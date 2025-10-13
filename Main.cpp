@@ -12,6 +12,7 @@ struct Nodo {
   Nodo(Cliente dato) : dato(dato), siguiente(nullptr) {}
 };
 
+
 // CLASE PILA
 class Pila {
   Nodo* tope = nullptr;
@@ -31,15 +32,23 @@ class Pila {
       tope = nuevo;
     }
     
-    void pop (){
+    Cliente pop (){
       if(empty){
-        throw new runtime_error("");
+        throw new runtime_error("La Pila esta vacia");
+        return;
       }
-
+      Nodo* temp =tope;
+      tope= tope -> siguiente;
+      delete temp;
     }
 
     Cliente peek(){
-
+      if(empty){
+        throw new runtime_error("La pila esta vacia");
+        return;
+      }
+      
+      return tope->dato;
     }
     
     bool empty(){
@@ -49,29 +58,49 @@ class Pila {
 
 
 // CLASE COLA
-class cola {
-private:
-  Nodo *frente;
-  Nodo *final;
+class Cola {
+  private:
+    Nodo* frente;
+    Nodo* final;
 
-public:
-  cola() : frente(nullptr), final(nullptr) {}
-  ~cola() {
-    while (!estaVacia()) {
-      dequeue();
+  public:
+    Cola() : frente(nullptr), final(nullptr) {}
+    ~Cola() {
+      while (!empty()) {
+        dequeue();
+      }
     }
-  }
 
-  void enqueue(Cliente valor){
-    Nodo* nuevo= new Nodo(valor);
-    final->siguiente=nuevo;
+    void enqueue(Cliente valor){
+      Nodo* nuevo=new Nodo(valor);
+      final->siguiente=nuevo;
+      final=nuevo;
+    }
 
-  }
+    Cliente dequeue(){
+      if(empty()){
+        throw new runtime_error("La cola esta vacia");
+      }
 
-  void dequeue(){
+      Nodo* temporal=frente;
+      Cliente cliente=frente->dato;
 
-  }
+      if(frente==final){
+        frente=nullptr;
+        final=nullptr;
 
+        delete temporal;
+      }
+
+      frente=frente->siguiente;
+
+      delete temporal;
+      return cliente;
+    }
+
+    bool empty(){
+      return frente==nullptr;
+    }
 };
 
 // CLASS LISTA
@@ -94,28 +123,31 @@ public:
     cout << "Cliente: " << nombre << " con un monto a pagar de:  " << monto;
   }
 };
-
-string PNombre(){
+string LNombre(){
   string nombre;
-  cout<<"IIngrese el nombre del cliente";
-  cin>>nombre;
-  if(cin.fai)
+  cout<<"Ingrese el nombre: ";
+  getline(cin, nombre);
+
+  if(nombre.empty()){
+    throw invalid_argument("ERROR");
+  }
+  return nombre;
 }
 
-double PMonto() {
+double LMonto(){
   double monto;
-  cout << "Ingrese monto del cliente: ";
-  cin >> monto;
-
-  if (cin.fail()) {
+  cout<<"ingrese monto: ";
+  cin>>monto;
+  
+  if(cin.fail()){
     cin.clear();
     cin.ignore(numerics_limits<streamsize>::max(), '\n');
-    cout<<"DEBES INGRESAR SOLO NUMEROS, INTENTA DE NUEVO";
+    cout<<"DEBEE INGRESAR SOLO NUMEROS. INTENTE DE NUEVO: "
     continue;
   }
   cin.ignore(numerics_limits<streamsize>::max(), '\n');
   return monto;
-};
+}
 
 
 
