@@ -1,6 +1,6 @@
 #include <iostream>
+#include <stdexcept>
 using namespace std;
-
 
 class Cliente {
 private:
@@ -31,23 +31,13 @@ public:
   }
 };
 
-
-
-
-
-// CLASS NODO
-struct Nodo
-{
+struct Nodo{
     Cliente dato;
     Nodo *siguiente;
 
     Nodo(Cliente dato) : dato(dato), siguiente(nullptr) {}
 };
 
-
-
-
-// CLASE PILA
 class Pila{
     Nodo *tope = nullptr;
 
@@ -60,29 +50,30 @@ public:
         }
     }
 
-    void push(Cliente valor){
+    void push(Cliente valor){ 
         Nodo *nuevo = new Nodo(valor);
         nuevo->siguiente = tope;
         tope = nuevo;
     }
 
     Cliente pop(){
-        if (empty)
+        if (empty())
         {
-            throw new runtime_error("La lista se encuentra vacia");
-            return;
+            throw runtime_error("La pila se encuentra vacia\n");
         }
         Nodo *temp = tope;
+        Cliente cliente=temp->dato;
+
         tope = tope->siguiente;
         delete temp;
+
+        return cliente;
     }
 
     Cliente peek(){
-        if (empty)
+        if (empty())
         {
-            throw new runtime_error("");
-            cout << "La pila esta vacia " << endl;
-            return;
+            throw runtime_error("La pila esta vacia\n");
         }
         return tope->dato;
     }
@@ -92,9 +83,9 @@ public:
     }
 };
 
-// CLASE COLA
+
 class Cola{
-    
+
 private:
     Nodo *frente=nullptr;
     Nodo *ultimo=nullptr;
@@ -108,9 +99,9 @@ public:
         }
     }
 
-    void enqueue(Cliente valor){
+    void enqueue(Cliente valor){ 
         Nodo* nuevo=new Nodo(valor);
-        
+
         if(empty()){
             frente=nuevo;
             ultimo=nuevo;
@@ -121,9 +112,9 @@ public:
         ultimo=nuevo;
     }
 
-    Cliente dequeue(){
+    Cliente dequeue(){ 
         if(empty()){
-            throw new runtime_error("La lista se encuentra vacia");
+            throw runtime_error("La lista se encuentra vacia\n");
         }
 
         Nodo* temporal=frente;
@@ -137,9 +128,9 @@ public:
 
     bool empty(){
         return frente==nullptr;
-    }
+    }                
 
-    int size(){
+    int size(){ 
         int contador=0;
 
         Nodo* recorrer=frente;
@@ -147,19 +138,12 @@ public:
             contador++;
             recorrer=recorrer->siguiente;
         }
-
         return contador;
     }
 };
 
-
-
-
-
-// CLASS LISTA
 class Lista{
     Nodo* cabeza=nullptr;
-
     public:
         Lista(){}
         ~Lista(){
@@ -168,20 +152,16 @@ class Lista{
             }
         }
 
-        void push_front(Cliente valor){
+        void push_front(Cliente valor){ 
             Nodo* nuevo=new Nodo(valor);
 
-            if(empty()){
-                cabeza=nuevo;
-                return;
-            }
-
-            cabeza->siguiente=nuevo;
+            nuevo->siguiente=cabeza;
+            cabeza=nuevo;
         }
 
         Cliente pop_front(){
             if(empty()){
-                throw new runtime_error("Lista se encuentra vacia");
+                throw runtime_error("Lista se encuentra vacia\n");
             }
 
             Nodo* temporal=cabeza;
@@ -193,39 +173,6 @@ class Lista{
             return cliente;
         }
 
-
-        Cliente remove(int i){
-            
-            if(empty()){
-                throw new runtime_error("Lista se encuentra vacia");
-            }
-
-            int tamano=size();
-            
-            if(tamano>i || i<=0){
-                throw new runtime_error("No se puede eliminar dato");
-            }
-
-            Nodo* recorrer=cabeza; //TODAS LA LISTA
-            Nodo* antes;
-            Nodo* eliminar;
-            for(int j=0;j<tamano;j++){ // HASTA j == i
-                recorrer=recorrer->siguiente;
-
-                if(j==i++){
-                    antes=recorrer;
-                }
-
-                if(j==i){
-                    eliminar=recorrer;
-                }
-
-
-            }
-
-            Cliente cliente=recorrer->dato;
-        }
-
         int size(){
             int contador=0;
 
@@ -234,56 +181,103 @@ class Lista{
                 contador++;
                 recorrer=recorrer->siguiente;
             }
-
             return contador;
         }
 
         bool empty(){
             return cabeza==nullptr;
         }
+
+        void todosClientes(){
+            if(empty()){
+                cout<<"No hay clientes atendidos"<<endl;
+                return;
+            }
+
+            int contador=0;
+            cout<<"\nLista: "<<endl;
+            Nodo* recorrer=cabeza;
+            while (recorrer != nullptr){
+                contador++;
+                Cliente cliente=recorrer->dato;
+                cout<<contador<<".-"<<" Nombre: "<<cliente.getNombre()<<" Monto: $"<<cliente.getMonto()<<endl;
+                recorrer=recorrer->siguiente;
+            }
+        }
 };
-
-
-
-
-
-
 
 int main(){
     int opc;
+    
     Cola cola;
-
-    //METER EN MEMORIA
+    Lista lista;
+    Pila pila;
     cola.enqueue(Cliente("Alfredo",88));
     cola.enqueue(Cliente("Victor",77.99));
     cola.enqueue(Cliente("David",77.88));
-    
+    cola.enqueue(Cliente("Jose",3.1416));
+    cola.enqueue(Cliente("Emili",66));
 
     do{
-        cout << "1.Agregar Cliente a la cola";
-        cout << "2.Atender Siguiente Cliente";
-        cout << "3.deshacer ultimo cliente";
-        cout << "4.Ver clientes atendidos";
-        cout << "5.Salir";
-        cin >> opc;
-        switch (opc)
-        {
-        case 1:
-            
-            break;
-        case 2:
-            // codigo
-            break;
-        case 3:
-            // codigo
-            break;
-        case 4:
-            // codigo
-            break;
-        default:
+        cout << "\n1.Agregar Cliente a la cola"<<endl;
+        cout << "2.Atender Siguiente Cliente"<<endl;
+        cout << "3.Cantidad de clientes que fueron atendidos"<<endl;
+        cout << "4.Ver clientes atendidos"<<endl;
+        cout << "5.Desacer Cliente atendido"<<endl;
+        cout << "6.Salir\n"<<endl; 
 
+        try{
+            cout<<"Ingrese opcion: ";
+            if(!(cin>>opc)){
+                throw runtime_error("Debe ingresar un numero valido");
+            }
+        }catch(const runtime_error& e){
+            cout<<"ERROR: "<< e.what()<<endl;
+        }
+        switch (opc){
+            case 1: {
+                Cliente cliente;
+                cliente.pedirDatos();
+                cola.enqueue(cliente);
+                break;
+            }
+            case 2:{
+                try {
+                    Cliente cliente = cola.dequeue();
+                    lista.push_front(cliente);
+                    pila.push(cliente);
+                    cout<<"\nCliente atendido: ";
+                    cout << "Nombre: " << cliente.getNombre()<<" monto: $"<<cliente.getMonto()<<"\n";
+                } catch(const runtime_error& e) {
+                    cout << "Error: " << e.what() << endl;
+                }
+                break;
+            }
+ 
+            case 3:{
+                cout<<"\nFueron atendidos: "<<lista.size()<<" clientes\n";
+                break;
+            }
+
+            case 4:{
+                lista.todosClientes();
+                break;
+            }
+            case 5:{
+                try{
+                    Cliente cliente = pila.pop();
+                    cola.enqueue(cliente);
+                    cout<<"cliente desecho: "<< cliente.getNombre()<<" con un monto de: $"<<cliente.getMonto()<<endl;
+                    break;
+                }catch(const runtime_error& e){
+                    cout << "Error: " << e.what() << endl;
+                }
+            }
+            
+            default:
+            cout<<"OPCION INVALIDA. INTENTE DE NUEVO ";
             break;
         }
-    } while (opc != 5);
+    } while (opc != 6);
     return 0;
 }
